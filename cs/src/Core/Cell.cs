@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace LikeAStar
 {
@@ -6,21 +7,26 @@ namespace LikeAStar
     {
         public class Cell
         {
-            enum Status
+            public enum Status
             {
                 None = 0,
                 Open,
-                Close
+                Close,
+                Disabled
             }
 
             public float x = 0;
             public float y = 0;
             public float width = 1;
             public float height = 1;
+            
+            public int gridX = 0;
+            public int gridY = 0;
 
-            public Status status = None;
+            public Status status = Status.None;
 
             public Cell parent = null;
+            public List<Cell> nexts = new List<Cell>();
 
             public float estimateCost;
             public float cost;
