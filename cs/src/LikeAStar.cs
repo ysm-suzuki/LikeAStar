@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+
 using LikeAStar.Core;
+using Atagoal.Core;
 using LWCollide;
 
 namespace LikeAStar
