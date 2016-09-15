@@ -18,8 +18,6 @@ namespace LikeAStar
         private float _fieldWidth = -1;
         private float _fieldHeight = -1;
 
-        private Point _start;
-        private Point _destination;
 
         private List<LWShape> _obstacles = new List<LWShape>();
 
@@ -48,35 +46,34 @@ namespace LikeAStar
             System.Diagnostics.Debug.Assert(_fieldWidth > 0);
             System.Diagnostics.Debug.Assert(_fieldHeight > 0);
 
-            _start = start;
-            _destination = destination;
 
             MakeCells();
 
-            if (_cells.Count > 20)
-                OptimizeCells();
+            OptimizeCells();
 
 
             List<Point> paths = new List<Point>();
 
 
-            Cell startCell = null;
-            Cell destinationCell = null;
-            foreach (Cell cell in _cells)
-            {
-                if (cell.IsWithIn(_start))
-                    startCell = cell;
-                if (cell.IsWithIn(_destination))
-                    destinationCell = cell;
-            }
-
+            Cell startCell = GetCell(start);
+            Cell destinationCell = GetCell(destination);
             System.Diagnostics.Debug.Assert(startCell != null && destinationCell != null);
 
             //run
 
+            paths.Add(destination);
+
             return paths;
         }
 
+        private Cell GetCell(Point position)
+        {
+            foreach (Cell cell in _cells)
+                if (cell.IsWithIn(position))
+                    return cell;
+
+            return null;
+        }
 
         private void MakeCells()
         {
