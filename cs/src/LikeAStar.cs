@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 
-using LikeAStar.Core;
 using Atagoal.Core;
 using LWCollide;
 
@@ -45,9 +44,9 @@ namespace LikeAStar
         public List<Point> Run(Point start, Point destination)
         {
             System.Diagnostics.Debug.Assert(_cellWidth > 0);
-            Debug.Assert(_cellHeight > 0);
-            Debug.Assert(_fieldWidth > 0);
-            Debug.Assert(_fieldHeight > 0);
+            System.Diagnostics.Debug.Assert(_cellHeight > 0);
+            System.Diagnostics.Debug.Assert(_fieldWidth > 0);
+            System.Diagnostics.Debug.Assert(_fieldHeight > 0);
 
             _start = start;
             _destination = destination;
@@ -71,7 +70,7 @@ namespace LikeAStar
                     destinationCell = cell;
             }
 
-            Debug.Assert(startCell != null && destinationCell != null);
+            System.Diagnostics.Debug.Assert(startCell != null && destinationCell != null);
 
             //run
 
