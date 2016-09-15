@@ -41,7 +41,7 @@ namespace LikeAStar
         }
 
 
-        public List<Point> Run(Point start, Point destination)
+        public List<Point> Run(LWShape subject, Point start, Point destination)
         {
             System.Diagnostics.Debug.Assert(_cellWidth > 0);
             System.Diagnostics.Debug.Assert(_cellHeight > 0);
