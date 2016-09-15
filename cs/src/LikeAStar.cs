@@ -175,7 +175,7 @@ namespace LikeAStar
             {
                 foreach (var obstacle in _obstacles)
                 {
-                    LWCollide.Core.Point point = new LWCollide.Core.Point
+                    Point point = new Point
                     {
                         x = vertex.x,
                         y = vertex.y
