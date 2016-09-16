@@ -49,21 +49,30 @@ namespace LikeAStar
 
             MakeCells();
 
-            OptimizeCells();
 
-
-            List<Point> paths = new List<Point>();
-
-
+            // Mark the start and destination cells
             Cell startCell = GetCell(start);
             Cell destinationCell = GetCell(destination);
             System.Diagnostics.Debug.Assert(startCell != null && destinationCell != null);
 
-            //run
+            
+            List<Cell> pathCells = SimpleAStar(startCell, destinationCell, _cells);
+            List<Point> rawPaths = new List<Point>();
+            foreach (Cell pathCell in pathCells)
+            {
+                if (pathCell == startCell)
+                    continue;
+                if (pathCell == destinationCell)
+                {
+                    // Add the destination point instead of the destinationCell's position.
+                    rawPaths.Add(destination);
+                    continue;
+                }
 
-            paths.Add(destination);
+                rawPaths.Add(pathCell.GetCenter());
+            }
 
-            return paths;
+            return rawPaths;
         }
 
         private Cell GetCell(Point position)
@@ -185,9 +194,21 @@ namespace LikeAStar
             return false;
         }
 
-        private void OptimizeCells()
-        {
 
+        private List<Cell> SimpleAStar(Cell start, Cell destination, List<Cell> cells)
+        {
+            List<Cell> path = new List<Cell>();
+
+            foreach (var test in cells)
+                if (test.GetCenter().Equals(new Point { x = 0.6f, y = 0.6f }))
+                    path.Add(test);
+            foreach (var test in cells)
+                if (test.GetCenter().Equals(new Point { x = 2.2f, y = 0.6f }))
+                    path.Add(test);
+
+            path.Add(destination);
+
+            return path;
         }
     }
 }

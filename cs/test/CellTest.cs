@@ -151,35 +151,35 @@ namespace LikeAStar
             }
 
             //-----------------------------------------------------------------------------
-            // Test GetPoint().
+            // Test GetCenter().
             // This provide a center position of the cell.
-            public void GetPointTest()
+            public void GetCenterTest()
             {
-                Console.WriteLine("Test Cell.GetPoint() ... ");
+                Console.WriteLine("Test Cell.GetCenter() ... ");
 
-                List<GetPointTestCase> testCases = new List<GetPointTestCase>
+                List<GetCenterTestCase> testCases = new List<GetCenterTestCase>
                 {
-                    GetPointTestCase.Case1(),
-                    GetPointTestCase.Case2(),
-                    GetPointTestCase.Case3()
+                    GetCenterTestCase.Case1(),
+                    GetCenterTestCase.Case2(),
+                    GetCenterTestCase.Case3()
                 };
 
                 foreach (var testCase in testCases)
                 {
-                    if (testCase.cell.GetPoint().Equals(testCase.expected))
+                    if (testCase.cell.GetCenter().Equals(testCase.expected))
                     {
                         Console.WriteLine("  Åõ Test Passed.");
                     }
                     else
                     {
                         Console.WriteLine("  Å~ Test Failed.");
-                        Console.WriteLine("Å~ Cell.GetPoint() is red.");
+                        Console.WriteLine("Å~ Cell.GetCenter() is red.");
                         return;
                     }
                 }
 
 
-                Console.WriteLine("Åù Cell.GetPoint() is green.");
+                Console.WriteLine("Åù Cell.GetCenter() is green.");
             }
         }
 
@@ -387,14 +387,14 @@ namespace LikeAStar
             }
         }
 
-        class GetPointTestCase
+        class GetCenterTestCase
         {
             public Cell cell;
             public Point expected;
 
-            public static GetPointTestCase Case1()
+            public static GetCenterTestCase Case1()
             {
-                return new GetPointTestCase
+                return new GetCenterTestCase
                 {
                     cell = new Cell
                     {
@@ -411,9 +411,9 @@ namespace LikeAStar
                 };
             }
 
-            public static GetPointTestCase Case2()
+            public static GetCenterTestCase Case2()
             {
-                return new GetPointTestCase
+                return new GetCenterTestCase
                 {
                     cell = new Cell
                     {
@@ -430,9 +430,9 @@ namespace LikeAStar
                 };
             }
 
-            public static GetPointTestCase Case3()
+            public static GetCenterTestCase Case3()
             {
-                return new GetPointTestCase
+                return new GetCenterTestCase
                 {
                     cell = new Cell
                     {

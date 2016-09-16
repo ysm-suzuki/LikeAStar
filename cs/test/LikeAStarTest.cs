@@ -22,7 +22,7 @@ namespace LikeAStar
 
                 var cell = new CellTest();
                 cell.IsWithInTest();
-                cell.GetPointTest();
+                cell.GetCenterTest();
             }
         }
 
@@ -159,8 +159,8 @@ namespace LikeAStar
             // A Obstacle is in the way.
             readonly TestCase case2 = new TestCase
             {
-                cellWidth = 1,
-                cellHeight = 1,
+                cellWidth = 0.4f,
+                cellHeight = 0.4f,
                 fieldWidth = 4,
                 fieldHeight = 4,
                 subject = LWShape.Create(
@@ -244,13 +244,13 @@ namespace LikeAStar
                 {
                     new Point
                     {
-                        x = 0.8f,
-                        y = 0.8f
+                        x = 0.6f,
+                        y = 0.6f
                     },
                     new Point
                     {
                         x = 2.2f,
-                        y = 0.8f
+                        y = 0.6f
                     },
                     new Point
                     {

@@ -41,7 +41,7 @@ namespace LikeAStar
                 && (y <= point.y && point.y <= y + height);
         }
 
-        public Point GetPoint()
+        public Point GetCenter()
         {
             return new Point
             {
