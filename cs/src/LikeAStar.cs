@@ -45,10 +45,9 @@ namespace LikeAStar
             System.Diagnostics.Debug.Assert(_cellHeight > 0);
             System.Diagnostics.Debug.Assert(_fieldWidth > 0);
             System.Diagnostics.Debug.Assert(_fieldHeight > 0);
-
+            
 
             MakeCells();
-
 
             // Mark the start and destination cells
             Cell startCell = GetCell(start);
@@ -58,10 +57,12 @@ namespace LikeAStar
             
             List<Cell> pathCells = SimpleAStar(startCell, destinationCell, _cells);
             List<Point> rawPaths = new List<Point>();
+
+            if (pathCells.Count == 0)
+                return rawPaths; // The path not found.
+
             foreach (Cell pathCell in pathCells)
             {
-                if (pathCell == startCell)
-                    continue;
                 if (pathCell == destinationCell)
                 {
                     // Add the destination point instead of the destinationCell's position.
@@ -72,7 +73,19 @@ namespace LikeAStar
                 rawPaths.Add(pathCell.GetCenter());
             }
 
-            return rawPaths;
+            foreach(var test in rawPaths)
+                Console.WriteLine("raw (" + test.x + "," + test.y + ")");
+            
+            List<Point> optimizedPaths = Optimize(subject, rawPaths);
+
+            foreach(var test in optimizedPaths)
+                Console.WriteLine("optimized (" + test.x + "," + test.y + ")");
+                
+            // Revome the start point.
+            Point resultStartPoint = optimizedPaths[0];
+            optimizedPaths.Remove(resultStartPoint);
+
+            return optimizedPaths;
         }
 
         private Cell GetCell(Point position)
@@ -187,7 +200,9 @@ namespace LikeAStar
                     };
 
                     if (obstacle.IsWithIn(point))
+                    {
                         return true;
+                    }
                 }
             }
 
@@ -195,20 +210,134 @@ namespace LikeAStar
         }
 
 
+        ////////////////////////////////////////// a-star 
+        // TODO : refactor
         private List<Cell> SimpleAStar(Cell start, Cell destination, List<Cell> cells)
         {
             List<Cell> path = new List<Cell>();
 
-            foreach (var test in cells)
-                if (test.GetCenter().Equals(new Point { x = 0.6f, y = 0.6f }))
-                    path.Add(test);
-            foreach (var test in cells)
-                if (test.GetCenter().Equals(new Point { x = 2.2f, y = 0.6f }))
-                    path.Add(test);
+            if (start.IsDisabled())
+                start.ForceReady();
+            if (destination.IsDisabled())
+                destination.ForceReady();
 
-            path.Add(destination);
+            bool isEnd = false;
+            System.Action<Cell> calcurate = null;                
+            calcurate = (Cell cell) => {
+                if (isEnd)
+                    return;
+                if (cell == null)
+                    return;
+                if (cell == destination){
+                    path = MakePath(cell);
+                    isEnd = true;
+                    return;
+                }
+
+                cell.Close();
+                    
+                List<Cell> openedCells = OpenNextCells(cell);
+                if (openedCells.Count == 0)
+                    return;            
+
+                foreach(var openedCell in openedCells)
+                    openedCell.SetScore(destination);
+
+                openedCells.Sort(delegate(Cell a, Cell b){
+                    return (int)(a.score - b.score);
+                });
+
+                foreach(var openedCell in openedCells)
+                    calcurate(openedCell);
+            };
+
+            start.Evaluate(destination);
+            calcurate(start);
 
             return path;
+        }
+
+        // Returns Opened cells. 
+        private List<Cell> OpenNextCells (Cell cell)
+        {
+            List<Cell> openedCells = new List<Cell>();
+
+            foreach(var nextCell in cell.nexts)
+            {
+                if (!nextCell.IsReady())
+                {
+                    continue;
+                }
+
+                nextCell.Open(cell);
+                openedCells.Add(nextCell);
+            }
+
+            return openedCells;
+        }
+
+        private List<Cell> MakePath(Cell cell)
+        {
+            List<Cell> path = new List<Cell>();
+
+            Cell current = cell;
+            while(current != null)
+            {
+                path.Add(current);
+                current = current.parent;         
+            }
+
+            path.Reverse();
+            return path;
+        }
+
+        //////////////////////////////////// Optimize
+        private List<Point> Optimize(LWShape subject, List<Point> rawPath)
+        {
+            List<Point> optimizedPath = new List<Point>();
+
+            // Set the start point. 
+            optimizedPath.Add(rawPath[0]);
+
+            if (rawPath.Count < 3)
+            {
+                optimizedPath.Add(rawPath[1]);
+                return optimizedPath;
+            }
+
+            int pos = 0;
+            for (int i = pos + 2; i < rawPath.Count; i++)
+            {
+                if (IsPassThrough(subject, rawPath[pos], rawPath[i]))
+                {
+                    continue;
+                }
+                    
+                pos = i - 1;
+                optimizedPath.Add(rawPath[i - 1]);
+            }
+        
+            // Set the destination point.
+            optimizedPath.Add(rawPath[rawPath.Count - 1]);
+
+            return optimizedPath;
+        }
+
+        // Can pass through between two points or not
+        private bool IsPassThrough(LWShape subject, Point from, Point to)
+        {
+            if (from.Equals(to))
+            return true;
+
+            Vector velocity = Vector.Create(from, to);
+
+            foreach(LWShape obstacle in _obstacles)
+            {
+                if(subject.Collided(velocity, obstacle))
+                    return false;
+            }
+
+            return true;
         }
     }
 }

@@ -59,25 +59,27 @@ namespace LikeAStar
 
                     if (count != testCase.expected.Count)
                     {
-                        Console.WriteLine("  Å~ Test Failed.");
-                        Console.WriteLine("Å~ LikeAStar.Run() is red.");
+                        Console.WriteLine("  X Test Failed.");
+                        Console.WriteLine("X LikeAStar.Run() is red.");
                         return;
                     }
 
                     for (int i = 0; i < count; i++ )
                     {
+                        
+                Console.WriteLine("result (" + result[i].x + "," + result[i].y + ")");
                         if (!result[i].Equals(testCase.expected[i]))
                         {
-                            Console.WriteLine("  Å~ Test Failed.");
-                            Console.WriteLine("Å~ LikeAStar.Run() is red.");
+                            Console.WriteLine("  X Test Failed.");
+                            Console.WriteLine("X LikeAStar.Run() is red.");
                             return;
                         }
                     }
 
-                    Console.WriteLine("  Åõ Test Passed.");
+                    Console.WriteLine("  O Test Passed.");
                 }
 
-                Console.WriteLine("Åù LikeAStar.Run() is green.");
+                Console.WriteLine("O LikeAStar.Run() is green.");
             }
 
             class TestCase
@@ -211,8 +213,8 @@ namespace LikeAStar
                         // position
                         new Point
                         {
-                            x = 1,
-                            y = 1
+                            x = 1.0f,
+                            y = 1.0f
                         },
                         // vertexes
                         new List<Point>

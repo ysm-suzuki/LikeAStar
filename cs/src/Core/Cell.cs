@@ -9,7 +9,7 @@ namespace LikeAStar
     {
         public enum Status
         {
-            None = 0,
+            Ready = 0,
             Open,
             Close,
             Disabled
@@ -23,13 +23,14 @@ namespace LikeAStar
         public int gridX = 0;
         public int gridY = 0;
 
-        public Status status = Status.None;
+        public Status status = Status.Ready;
 
         public Cell parent = null;
         public List<Cell> nexts = new List<Cell>();
 
         public float estimateCost;
         public float cost;
+        public float score;
 
 
         public bool IsWithIn(Point point)
@@ -48,6 +49,54 @@ namespace LikeAStar
                 x = this.x + width / 2,
                 y = this.y + height / 2
             };
+        }
+
+        public bool IsReady()
+        {
+            return status == Status.Ready;
+        }
+        
+        public bool IsDisabled()
+        {
+            return status == Status.Disabled;
+        }
+
+        public void ForceReady()
+        {
+            status = Status.Ready;
+        }
+
+        public void Open(Cell opener)
+        {
+            status = Status.Open;
+            parent = opener;
+        }
+        
+        public void Close()
+        {
+            status = Status.Close;
+        }
+
+        public float Evaluate(Cell destination)
+        {
+            SetScore(destination);
+            Close();
+            return score;
+        }
+
+        public void SetScore(Cell destination)
+        {
+            float deltaX = destination.x - x;
+            float deltaY = destination.y - y;
+            estimateCost = deltaX > deltaY ? deltaX : deltaY;
+            cost = parent == null ? 0 : parent.cost + 1;
+            /*
+            estimateCost = deltaX * deltaX + deltaY * deltaY;
+            cost = parent == null 
+                    ? 0 
+                    : parent.cost + (parent.x - x)*(parent.x - x) + (parent.y - y)*(parent.y - y);
+*/
+            score = estimateCost + cost;
         }
     }
 }
