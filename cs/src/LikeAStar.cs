@@ -18,6 +18,9 @@ namespace LikeAStar
         private float _fieldWidth = -1;
         private float _fieldHeight = -1;
 
+        // cells
+        private int _horizonSize = 0;
+        private int _verticalSize = 0;
 
         private List<LWShape> _obstacles = new List<LWShape>();
 
@@ -101,6 +104,10 @@ namespace LikeAStar
         {
             int horizonSize = (int)System.Math.Floor(_fieldWidth / _cellWidth);
             int verticalSize = (int)System.Math.Floor(_fieldHeight / _cellHeight);
+
+            _horizonSize = horizonSize;
+            _verticalSize = verticalSize;
+             
             
             for (int i = 0; i < horizonSize; i++)
             {
@@ -221,6 +228,7 @@ namespace LikeAStar
             if (destination.IsDisabled())
                 destination.ForceReady();
 
+            List<List<Cell>> paths = new List<List<Cell>>();
             bool isEnd = false;
             System.Action<Cell> calcurate = null;                
             calcurate = (Cell cell) => {
@@ -253,6 +261,9 @@ namespace LikeAStar
 
             start.Evaluate(destination);
             calcurate(start);
+
+            // debug
+            ShowGraph(cells, path, start, destination);
 
             return path;
         }
@@ -338,6 +349,47 @@ namespace LikeAStar
             }
 
             return true;
+        }
+
+
+        // Debug
+        private void ShowGraph(List<Cell> cells, List<Cell> path, Cell start, Cell destination)
+        {
+            Console.WriteLine("---------- ShowGraph ----------");
+            for (int i = _verticalSize - 1; i >= 0; i--)
+            {
+                String lineGraph = "|";
+                for (int j = 0; j < _horizonSize; j++)
+                {
+                    Cell cell = FindCell(cells, j, i);
+                    if (cell == null)
+                        continue;
+                    
+                    if (cell.IsDisabled())
+                        lineGraph += "/";
+                    else if (cell == start)
+                        lineGraph += "S";
+                    else if (cell == destination)
+                        lineGraph += "D";
+                    else if (path.Contains(cell))
+                        lineGraph += "*";
+                    else
+                        lineGraph += " ";
+                }
+                
+                Console.WriteLine(lineGraph);
+            }
+            Console.WriteLine("------------------------------");
+        }
+
+        private Cell FindCell(List<Cell> cells, int gridX, int gridY)
+        {
+            foreach(Cell cell in cells)
+                if (cell.gridX == gridX
+                && cell.gridY == gridY)
+                return cell;
+
+            return null;
         }
     }
 }
