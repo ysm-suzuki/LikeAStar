@@ -50,6 +50,7 @@ namespace LikeAStar
                     likeAStar.SetCellSize(testCase.cellWidth, testCase.cellHeight);
                     likeAStar.SetFieldSize(testCase.fieldWidth, testCase.fieldHeight);
                     likeAStar.SetObsacles(testCase.obstacles);
+
                     List<Point> result = likeAStar.Run(
                             testCase.subject,
                             testCase.start,

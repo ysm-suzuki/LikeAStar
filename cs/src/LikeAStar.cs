@@ -349,14 +349,17 @@ namespace LikeAStar
             if (from.Equals(to))
                 return true;
 
+            subject.SetPosition(from);
             Vector velocity = Vector.Create(from, to);
 
             foreach(LWShape obstacle in _obstacles)
             {
-                if (!subject.GetCollisionPoint(velocity, obstacle).IsInvalidPoint())
-                {
-                    return false;
-                }
+                Point collisionPoint = subject.GetCollisionPoint(velocity, obstacle);
+
+                if (collisionPoint.IsInvalidPoint())
+                    continue;
+
+                return false;
             }
 
             return true;
