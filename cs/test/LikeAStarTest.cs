@@ -17,6 +17,7 @@ namespace LikeAStar
 
             public void Run()
             {
+                LikeAStar.isTest = true;
                 var likeAStar = new LikeAStarTest();
                 likeAStar.RunTest();
 

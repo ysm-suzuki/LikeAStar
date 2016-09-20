@@ -10,6 +10,8 @@ namespace LikeAStar
     // This is the main interface
     public class LikeAStar
     {
+        public static bool isTest = false;
+
         private List<Cell> _cells = new List<Cell>();
 
         private float _cellWidth = -1;
@@ -76,13 +78,15 @@ namespace LikeAStar
                 rawPaths.Add(pathCell.GetCenter());
             }
 
-            foreach(var test in rawPaths)
-                Console.WriteLine("raw (" + test.x + "," + test.y + ")");
+            if (isTest)
+                foreach(var test in rawPaths)
+                    Console.WriteLine("raw (" + test.x + "," + test.y + ")");
             
             List<Point> optimizedPaths = Optimize(subject, rawPaths);
 
-            foreach(var test in optimizedPaths)
-                Console.WriteLine("optimized (" + test.x + "," + test.y + ")");
+            if (isTest)
+                foreach(var test in optimizedPaths)
+                    Console.WriteLine("optimized (" + test.x + "," + test.y + ")");
                 
             // Revome the start point.
             Point resultStartPoint = optimizedPaths[0];
@@ -252,7 +256,11 @@ namespace LikeAStar
                     openedCell.SetScore(destination);
 
                 openedCells.Sort(delegate(Cell a, Cell b){
-                    return (int)(a.score - b.score);
+                    float diff = a.score - b.score;
+                    while (diff != 0
+                        && diff * diff < 1)
+                            diff *= 10;
+                    return (int)(diff);
                 });
 
                 foreach(var openedCell in openedCells)
@@ -263,7 +271,8 @@ namespace LikeAStar
             calcurate(start);
 
             // debug
-            ShowGraph(cells, path, start, destination);
+            if (isTest)
+                ShowGraph(cells, path, start, destination);
 
             return path;
         }

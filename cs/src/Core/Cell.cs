@@ -89,12 +89,10 @@ namespace LikeAStar
             float deltaX = destination.x - x;
             float deltaY = destination.y - y;
 
-            estimateCost = deltaX + deltaY;
+            estimateCost = deltaX * deltaX + deltaY * deltaY;
             cost = parent == null 
                     ? 0 
-                    : parent.cost + (float)System.Math.Sqrt(
-                                        (parent.x - x) * (parent.x - x) + (parent.y - y) * (parent.y - y)
-                                    );
+                    : parent.cost + (parent.x - x) * (parent.x - x) + (parent.y - y) * (parent.y - y);
             score = estimateCost + cost;
         }
     }
