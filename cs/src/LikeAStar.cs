@@ -347,21 +347,23 @@ namespace LikeAStar
         private bool IsPassThrough(LWShape subject, Point from, Point to)
         {
             if (from.Equals(to))
-            return true;
+                return true;
 
             Vector velocity = Vector.Create(from, to);
 
             foreach(LWShape obstacle in _obstacles)
             {
-                if(subject.Collided(velocity, obstacle))
+                if (!subject.GetCollisionPoint(velocity, obstacle).IsInvalidPoint())
+                {
                     return false;
+                }
             }
 
             return true;
         }
 
 
-        // Debug
+        ////////////////////////////////////////// Debug
         private void ShowGraph(List<Cell> cells, List<Cell> path, Cell start, Cell destination)
         {
             Console.WriteLine("---------- ShowGraph ----------");
