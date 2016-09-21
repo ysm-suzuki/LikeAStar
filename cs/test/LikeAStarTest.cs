@@ -248,7 +248,7 @@ namespace LikeAStar
                 {
                     new Point
                     {
-                        x = 0.6f,
+                        x = 1,
                         y = 0.6f
                     },
                     new Point
