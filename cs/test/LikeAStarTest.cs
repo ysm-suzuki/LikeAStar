@@ -41,14 +41,15 @@ namespace LikeAStar
                 List<TestCase> testCases = new List<TestCase>
                 {
                     case1,
-                    case2
+                    //case2,
+                    case3
                 };
 
                 foreach (var testCase in testCases)
                 {
                     LikeAStar likeAStar = new LikeAStar();
                     likeAStar.SetCellSize(testCase.cellWidth, testCase.cellHeight);
-                    likeAStar.SetFieldSize(testCase.fieldWidth, testCase.fieldHeight);
+                    likeAStar.SetFieldRect(testCase.fieldX, testCase.fieldY, testCase.fieldWidth, testCase.fieldHeight);
                     likeAStar.SetObsacles(testCase.obstacles);
 
                     List<Point> result = likeAStar.Run(
@@ -88,6 +89,8 @@ namespace LikeAStar
             {
                 public float cellWidth;
                 public float cellHeight;
+                public float fieldX;
+                public float fieldY;
                 public float fieldWidth;
                 public float fieldHeight;
                 public LWShape subject;
@@ -103,6 +106,8 @@ namespace LikeAStar
             {
                 cellWidth = 1,
                 cellHeight = 1,
+                fieldX = 0,
+                fieldY = 0,
                 fieldWidth = 4,
                 fieldHeight = 4,
                 subject = LWShape.Create(
@@ -165,6 +170,8 @@ namespace LikeAStar
             {
                 cellWidth = 0.4f,
                 cellHeight = 0.4f,
+                fieldX = 0,
+                fieldY = 0,
                 fieldWidth = 4,
                 fieldHeight = 4,
                 subject = LWShape.Create(
@@ -239,6 +246,144 @@ namespace LikeAStar
                             new Point
                             {
                                 x = 1,
+                                y = 0
+                            }
+                        }
+                    )
+                },
+                expected = new List<Point>
+                {
+                    new Point
+                    {
+                        x = 1,
+                        y = 0.6f
+                    },
+                    new Point
+                    {
+                        x = 2.2f,
+                        y = 0.6f
+                    },
+                    new Point
+                    {
+                        x = 3,
+                        y = 2
+                    }
+                }
+            };
+
+            // A Obstacle is in the way. Field offsets (-4, -4)
+            readonly TestCase case3 = new TestCase
+            {
+                cellWidth = 0.4f,
+                cellHeight = 0.4f,
+                fieldX = -4,
+                fieldY = -4,
+                fieldWidth = 8,
+                fieldHeight = 8,
+                subject = LWShape.Create(
+                    // position
+                    new Point
+                    {
+                        x = -3,
+                        y = -3
+                    },
+                    // vertexes
+                    new List<Point>
+                    {
+                        new Point
+                        {
+                            x = -0.2f,
+                            y = -0.2f
+                        },
+                        new Point
+                        {
+                            x = -0.2f,
+                            y = 0.2f
+                        },
+                        new Point
+                        {
+                            x = 0.2f,
+                            y = 0.2f
+                        },
+                        new Point
+                        {
+                            x = 0.2f,
+                            y = -0.2f
+                        }
+                    }
+                ),
+                start = new Point
+                {
+                    x = -3,
+                    y = -3
+                },
+                destination = new Point
+                {
+                    x = 3,
+                    y = 2
+                },
+                obstacles = new List<LWShape>
+                {
+                    LWShape.Create(
+                        // position
+                        new Point
+                        {
+                            x = 1.0f,
+                            y = 1.0f
+                        },
+                        // vertexes
+                        new List<Point>
+                        {
+                            new Point
+                            {
+                                x = 0,
+                                y = 0
+                            },
+                            new Point
+                            {
+                                x = 0,
+                                y = 2.5f
+                            },
+                            new Point
+                            {
+                                x = 1,
+                                y = 2.5f
+                            },
+                            new Point
+                            {
+                                x = 1,
+                                y = 0
+                            }
+                        }
+                    ),
+                    LWShape.Create(
+                        // position
+                        new Point
+                        {
+                            x = -1.5f,
+                            y = -1.0f
+                        },
+                        // vertexes
+                        new List<Point>
+                        {
+                            new Point
+                            {
+                                x = 0,
+                                y = 0
+                            },
+                            new Point
+                            {
+                                x = 0,
+                                y = 0.2f
+                            },
+                            new Point
+                            {
+                                x = 6,
+                                y = 0.2f
+                            },
+                            new Point
+                            {
+                                x = 6,
                                 y = 0
                             }
                         }

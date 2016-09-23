@@ -17,6 +17,8 @@ namespace LikeAStar
         private float _cellWidth = -1;
         private float _cellHeight = -1;
 
+        private float _fieldX = 0;
+        private float _fieldY = 0;
         private float _fieldWidth = -1;
         private float _fieldHeight = -1;
 
@@ -32,8 +34,10 @@ namespace LikeAStar
             _cellHeight = height;
         }
 
-        public void SetFieldSize(float width, float height)
+        public void SetFieldRect(float x, float y, float width, float height)
         {
+            _fieldX = x;
+            _fieldY = y;
             _fieldWidth = width;
             _fieldHeight = height;
         }
@@ -58,7 +62,6 @@ namespace LikeAStar
             Cell startCell = GetCell(start);
             Cell destinationCell = GetCell(destination);
             System.Diagnostics.Debug.Assert(startCell != null && destinationCell != null);
-
             
             List<Cell> pathCells = SimpleAStar(startCell, destinationCell, _cells);
             List<Point> rawPaths = new List<Point>();
@@ -97,10 +100,12 @@ namespace LikeAStar
 
         private Cell GetCell(Point position)
         {
+            Console.WriteLine("position : (" + position.x + "," + position.y + ")");
             foreach (Cell cell in _cells)
                 if (cell.IsWithIn(position))
                     return cell;
 
+            Console.WriteLine("not found");
             return null;
         }
 
@@ -119,8 +124,8 @@ namespace LikeAStar
                 {
                     Cell cell = new Cell
                     {
-                        x = i * _cellWidth,
-                        y = j * _cellHeight,
+                        x = i * _cellWidth + _fieldX,
+                        y = j * _cellHeight + _fieldY,
                         width = _cellWidth,
                         height = _cellHeight,
                         gridX = i,
@@ -231,7 +236,7 @@ namespace LikeAStar
                 start.ForceReady();
             if (destination.IsDisabled())
                 destination.ForceReady();
-
+            
             List<List<Cell>> paths = new List<List<Cell>>();
             bool isEnd = false;
             System.Action<Cell> calcurate = null;                
