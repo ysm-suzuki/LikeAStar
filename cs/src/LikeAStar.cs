@@ -5,7 +5,7 @@ using System.Diagnostics;
 using Atagoal.Core;
 using LWCollide;
 
-namespace LikeAStar
+namespace JustLikeAStar
 {
     // This is the main interface
     public class LikeAStar
@@ -63,8 +63,10 @@ namespace LikeAStar
             Cell destinationCell = GetCell(destination);
             System.Diagnostics.Debug.Assert(startCell != null && destinationCell != null);
 
-            List<AStarPath> results = SimpleAStar(startCell, destinationCell, _cells);
-            List<Cell> pathCells = GetMinScorePath(results).path;
+            SimpleAStar aStar = new SimpleAStar();
+            Stack <Cell> pathCells = aStar.Get(startCell, destinationCell, _cells);
+
+
             List<Point> rawPaths = new List<Point>();
 
             if (pathCells.Count == 0)
@@ -82,12 +84,16 @@ namespace LikeAStar
                 rawPaths.Add(pathCell.GetCenter());
             }
 
+            // debug
+            if (isTest)
+                ShowGraph(_cells, pathCells, startCell, destinationCell);
             if (isTest)
                 foreach(var test in rawPaths)
                     Console.WriteLine("raw (" + test.x + "," + test.y + ")");
             
             List<Point> optimizedPaths = Optimize(subject, rawPaths);
 
+            // debug
             if (isTest)
                 foreach(var test in optimizedPaths)
                     Console.WriteLine("optimized (" + test.x + "," + test.y + ")");
@@ -227,136 +233,7 @@ namespace LikeAStar
         }
 
 
-        ////////////////////////////////////////// a-star 
-        // TODO : refactor
-
-        class AStarPath
-        {
-            public List<Cell> path;
-            public float score;
-
-            public static float GetScore(List<Cell> target)
-            {
-                float ret = 0;
-
-                foreach (Cell cell in target)
-                    ret += cell.score;
-
-                return ret;
-            }
-        }
-
-        private AStarPath GetMinScorePath(List<AStarPath> paths)
-        {
-            float minScore = float.MaxValue;
-            AStarPath minScorePath = null;
-            foreach(AStarPath path in paths)
-            {
-                if (path.score < minScore)
-                {
-                    minScore = path.score;
-                    minScorePath = path;
-                }
-            }
-
-            return minScorePath;
-        }
-
-        private List<AStarPath> SimpleAStar(Cell start, Cell destination, List<Cell> cells)
-        {
-            List<AStarPath> results = new List<AStarPath>();
-
-            List<Cell> path = new List<Cell>();
-
-            if (start.IsDisabled())
-                start.ForceReady();
-            if (destination.IsDisabled())
-                destination.ForceReady();
-            
-            List<List<Cell>> paths = new List<List<Cell>>();
-            bool isEnd = false;
-            System.Action<Cell> calcurate = null;                
-            calcurate = (Cell cell) => {
-                if (isEnd)
-                    return;
-                if (cell == null)
-                    return;
-                if (cell == destination){
-                    path = MakePath(cell);
-                    isEnd = true;
-                    return;
-                }
-
-                cell.Close();
-                    
-                List<Cell> openedCells = OpenNextCells(cell);
-                if (openedCells.Count == 0)
-                    return;            
-
-                foreach(var openedCell in openedCells)
-                    openedCell.SetScore(destination);
-
-                openedCells.Sort(delegate(Cell a, Cell b){
-                    float diff = a.score - b.score;
-                    while (diff != 0
-                        && diff * diff < 1)
-                            diff *= 10;
-                    return (int)(diff);
-                });
-
-                foreach(var openedCell in openedCells)
-                    calcurate(openedCell);
-            };
-
-            start.Evaluate(destination);
-            calcurate(start);
-
-            // debug
-            if (isTest)
-                ShowGraph(cells, path, start, destination);
-
-            results.Add(new AStarPath
-            {
-                path = path,
-                score = AStarPath.GetScore(path)
-            });
-
-            return results;
-        }
-
-        // Returns Opened cells. 
-        private List<Cell> OpenNextCells (Cell cell)
-        {
-            List<Cell> openedCells = new List<Cell>();
-
-            foreach(var nextCell in cell.nexts)
-            {
-                if (!nextCell.IsReady())
-                {
-                    continue;
-                }
-
-                nextCell.Open(cell);
-                openedCells.Add(nextCell);
-            }
-
-            return openedCells;
-        }
-
-        private List<Cell> MakePath(Cell cell)
-        {
-            List<Cell> path = new List<Cell>();
-
-            Cell current = cell;
-            while(current != null)
-            {
-                path.Add(current);
-                current = current.parent;         
-            }
-
-            path.Reverse();
-            return path;
-        }
+        
 
         //////////////////////////////////// Optimize
         private List<Point> Optimize(LWShape subject, List<Point> rawPath)
@@ -414,7 +291,7 @@ namespace LikeAStar
 
 
         ////////////////////////////////////////// Debug
-        private void ShowGraph(List<Cell> cells, List<Cell> path, Cell start, Cell destination)
+        private void ShowGraph(List<Cell> cells, Stack<Cell> path, Cell start, Cell destination)
         {
             Console.WriteLine("---------- ShowGraph ----------");
             for (int i = _verticalSize - 1; i >= 0; i--)

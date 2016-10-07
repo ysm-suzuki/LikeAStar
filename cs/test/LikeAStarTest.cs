@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using Atagoal.Core;
 using LWCollide;
 
-namespace LikeAStar
+namespace JustLikeAStar
 {
     namespace UnitTest
     {

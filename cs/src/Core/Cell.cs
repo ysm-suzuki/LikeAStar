@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 using Atagoal.Core;
 
-namespace LikeAStar
+namespace JustLikeAStar
 {
     public class Cell
     {
