@@ -62,8 +62,9 @@ namespace LikeAStar
             Cell startCell = GetCell(start);
             Cell destinationCell = GetCell(destination);
             System.Diagnostics.Debug.Assert(startCell != null && destinationCell != null);
-            
-            List<Cell> pathCells = SimpleAStar(startCell, destinationCell, _cells);
+
+            List<AStarPath> results = SimpleAStar(startCell, destinationCell, _cells);
+            List<Cell> pathCells = GetMinScorePath(results).path;
             List<Point> rawPaths = new List<Point>();
 
             if (pathCells.Count == 0)
@@ -228,8 +229,43 @@ namespace LikeAStar
 
         ////////////////////////////////////////// a-star 
         // TODO : refactor
-        private List<Cell> SimpleAStar(Cell start, Cell destination, List<Cell> cells)
+
+        class AStarPath
         {
+            public List<Cell> path;
+            public float score;
+
+            public static float GetScore(List<Cell> target)
+            {
+                float ret = 0;
+
+                foreach (Cell cell in target)
+                    ret += cell.score;
+
+                return ret;
+            }
+        }
+
+        private AStarPath GetMinScorePath(List<AStarPath> paths)
+        {
+            float minScore = float.MaxValue;
+            AStarPath minScorePath = null;
+            foreach(AStarPath path in paths)
+            {
+                if (path.score < minScore)
+                {
+                    minScore = path.score;
+                    minScorePath = path;
+                }
+            }
+
+            return minScorePath;
+        }
+
+        private List<AStarPath> SimpleAStar(Cell start, Cell destination, List<Cell> cells)
+        {
+            List<AStarPath> results = new List<AStarPath>();
+
             List<Cell> path = new List<Cell>();
 
             if (start.IsDisabled())
@@ -279,7 +315,13 @@ namespace LikeAStar
             if (isTest)
                 ShowGraph(cells, path, start, destination);
 
-            return path;
+            results.Add(new AStarPath
+            {
+                path = path,
+                score = AStarPath.GetScore(path)
+            });
+
+            return results;
         }
 
         // Returns Opened cells. 
