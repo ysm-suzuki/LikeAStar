@@ -41,7 +41,7 @@ namespace JustLikeAStar
                 List<TestCase> testCases = new List<TestCase>
                 {
                     case1,
-                    //case2,
+                    case2,
                     case3
                 };
 
@@ -70,7 +70,7 @@ namespace JustLikeAStar
                     for (int i = 0; i < count; i++ )
                     {
                         
-                Console.WriteLine("result (" + result[i].x + "," + result[i].y + ")");
+                        Console.WriteLine("result (" + result[i].x + "," + result[i].y + ")");
                         if (!result[i].Equals(testCase.expected[i]))
                         {
                             Console.WriteLine("  X Test Failed.");

@@ -49,21 +49,5 @@ namespace JustLikeAStar
 
             return path;
         }
-
-        protected AStarPath GetMinScorePath(List<AStarPath> paths)
-        {
-            float minScore = float.MaxValue;
-            AStarPath minScorePath = null;
-            foreach (AStarPath path in paths)
-            {
-                if (path.score < minScore)
-                {
-                    minScore = path.score;
-                    minScorePath = path;
-                }
-            }
-
-            return minScorePath;
-        }
     }
 }
